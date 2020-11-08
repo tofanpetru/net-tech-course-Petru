@@ -30,7 +30,6 @@ else
     <h3>Create a new wallet</h3>
     <input type="text" placeholder="Currency" @bind="Currency" />
     <button class="btn-primary" @onclick="() => CreateWallet()">Create wallet</button>
-    <button class="btn-danger" @onclick="() => DeleteWallet()">Delete Wallet</button>
 </div>
 
 @code {
@@ -75,12 +74,4 @@ else
         }
 
     }
-    private async Task DeleteWallet()
-    {
-
-      
-
-
-    }
-
 }

@@ -58,6 +58,23 @@ namespace BlazorApp3.Server.Controllers
 
             return Ok();
         }
-        
+        [HttpDelete("delete/{id}")]
+        public async IActionResult DeleteWallet (int id)
+        {
+            var _wallet = await context.Wallets.FindAsync(id);
+            if (_wallet == null)
+            {
+                return NotFound();
+            }
+            context.Wallets.Remove(_wallet);
+            await context.SaveChangesAsync();
+
+            return _wallet;
+        }
+        /*
+        private bool If_Wallet_Exists(int id)
+        {
+            return context.Wallets.Any(e => e.Id == id);
+        }*/
     }
 }
