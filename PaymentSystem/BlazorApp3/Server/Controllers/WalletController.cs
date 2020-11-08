@@ -59,7 +59,7 @@ namespace BlazorApp3.Server.Controllers
             return Ok();
         }
         [HttpDelete("delete/{id}")]
-        public async IActionResult DeleteWallet (int id)
+        public async Task<ActionResult<Wallet>> DeleteWallet (int id)
         {
             var _wallet = await context.Wallets.FindAsync(id);
             if (_wallet == null)
