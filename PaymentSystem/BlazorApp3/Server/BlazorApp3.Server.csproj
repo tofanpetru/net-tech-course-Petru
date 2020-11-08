@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.1" />
+    <PackageReference Include="RazorComponentsPreview" Version="0.6.0" />
   </ItemGroup>
 
   <ItemGroup>
