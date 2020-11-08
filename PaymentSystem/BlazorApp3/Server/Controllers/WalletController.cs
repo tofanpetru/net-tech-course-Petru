@@ -71,10 +71,5 @@ namespace BlazorApp3.Server.Controllers
 
             return _wallet;
         }
-        /*
-        private bool If_Wallet_Exists(int id)
-        {
-            return context.Wallets.Any(e => e.Id == id);
-        }*/
     }
 }
