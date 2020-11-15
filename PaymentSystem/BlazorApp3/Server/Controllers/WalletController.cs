@@ -82,6 +82,7 @@ namespace BlazorApp3.Server.Controllers
         [HttpDelete]
         [Route("{id}")]
         public IActionResult DeleteWallet([FromRoute] Guid id)
+<<<<<<< HEAD
         {
             var userId = userManager.GetUserId(User);
             var user = context.Users.Include(x => x.Wallets).FirstOrDefault(x => x.Id == userId);
@@ -101,10 +102,13 @@ namespace BlazorApp3.Server.Controllers
         [HttpPost]
         [Route("transfer")]
         public ActionResult MakeTransfer([FromBody] TransferDto data)
+=======
+>>>>>>> main
         {
             var userId = userManager.GetUserId(User);
             var user = context.Users.Include(x => x.Wallets).FirstOrDefault(x => x.Id == userId);
 
+<<<<<<< HEAD
             if (!user.Wallets.Any(x => x.Currency == data.Currency))
             {
                 return BadRequest();
@@ -113,10 +117,14 @@ namespace BlazorApp3.Server.Controllers
             var source = user.Wallets.FirstOrDefault(x => x.Currency == data.Currency);
 
             if (source.Amount < data.Amount)
+=======
+            if (!user.Wallets.Any(x => x.Id == id))
+>>>>>>> main
             {
                 return BadRequest();
             }
 
+<<<<<<< HEAD
             var destinationUser = context.Users.Include(x => x.Wallets).FirstOrDefault(x => x.UserName == data.Username);
 
             var destination = destinationUser.Wallets.FirstOrDefault(x => x.Currency == data.Currency);
@@ -130,6 +138,33 @@ namespace BlazorApp3.Server.Controllers
                 };
 
                 destinationUser.Wallets.Add(destination);
+=======
+            var wallet = context.Wallets.Find(id);
+            context.Wallets.Remove(wallet);
+            context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("transfer")]
+        public ActionResult MakeTransfer([FromBody] TransferDto data)
+        {
+            var userId = userManager.GetUserId(User);
+            var user = context.Users.Include(x => x.Wallets).FirstOrDefault(x => x.Id == userId);
+            if (!user.Wallets.Any(x => x.Id == Guid.Parse(data.SourceWalletId)))
+            {
+                return BadRequest();
+            }
+
+            var source = user.Wallets.FirstOrDefault(x => x.Id == Guid.Parse(data.SourceWalletId));
+            var destinantionUser = context.Users.Include(x => x.Wallets).FirstOrDefault(x => x.UserName == data.Username);
+            var destination = destinantionUser.Wallets.FirstOrDefault(x => x.Currency == data.Currency);
+
+            if (destination == null || source.Amount < data.Amount)
+            {
+                return BadRequest();
+>>>>>>> main
             }
 
             source.Amount -= data.Amount;

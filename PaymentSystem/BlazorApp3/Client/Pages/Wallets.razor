@@ -5,6 +5,7 @@
 @attribute [Authorize]
 @inject NavigationManager navManager
 @inject HttpClient HttpClient
+@inject NavigationManager navManager
 
 
 <h3>Wallets</h3>
@@ -25,6 +26,7 @@ else
                 @wallet.Amount
                 @wallet.Currency
             </h5>
+<<<<<<< HEAD
             <button @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
             <button @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
             <br />
@@ -46,6 +48,12 @@ else
         {
             <div>You already have one wallet in each currency.</div>
         }
+=======
+            <button class="btn btn-success" @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
+            <button class="btn btn-danger" @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
+            <br />
+        </div>
+>>>>>>> main
     }
 }
 
@@ -58,6 +66,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+<<<<<<< HEAD
         await LoadCurrencies();
         await LoadWallets();
         GetAllowedCurrencies();
@@ -73,6 +82,9 @@ else
         {
             exception.Redirect();
         }
+=======
+        await LoadWallets();
+>>>>>>> main
     }
 
     private async Task LoadWallets()
@@ -114,7 +126,10 @@ else
             if (response.IsSuccessStatusCode)
             {
                 await LoadWallets();
+<<<<<<< HEAD
                 GetAllowedCurrencies();
+=======
+>>>>>>> main
             }
         }
         catch (AccessTokenNotAvailableException exception)
@@ -129,7 +144,10 @@ else
         {
             await HttpClient.DeleteAsync("api/wallet/" + id);
             await LoadWallets();
+<<<<<<< HEAD
             GetAllowedCurrencies();
+=======
+>>>>>>> main
         }
         catch (AccessTokenNotAvailableException exception)
         {
