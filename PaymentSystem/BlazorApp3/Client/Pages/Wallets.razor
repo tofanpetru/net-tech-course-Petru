@@ -26,7 +26,6 @@ else
                 @wallet.Amount
                 @wallet.Currency
             </h5>
-<<<<<<< HEAD
             <button @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
             <button @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
             <br />
@@ -35,12 +34,14 @@ else
         {
             <div>
                 <h3>Create a new wallet</h3>
+
                 <select @bind="Currency">
                     @foreach (var currency in AllowedCurrencies)
                     {
                         <option value="@currency">@currency</option>
                     }
                 </select>
+
                 <button @onclick="() => CreateWallet()">Create wallet</button>
             </div>
         }
@@ -48,25 +49,20 @@ else
         {
             <div>You already have one wallet in each currency.</div>
         }
-=======
-            <button class="btn btn-success" @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
-            <button class="btn btn-danger" @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
-            <br />
-        </div>
->>>>>>> main
     }
 }
 
 @code {
     private CurrencyList CurrencyList;
+
     private List<string> AllowedCurrencies;
 
     private List<Wallet> WalletList;
+
     private string Currency;
 
     protected override async Task OnInitializedAsync()
     {
-<<<<<<< HEAD
         await LoadCurrencies();
         await LoadWallets();
         GetAllowedCurrencies();
@@ -82,9 +78,6 @@ else
         {
             exception.Redirect();
         }
-=======
-        await LoadWallets();
->>>>>>> main
     }
 
     private async Task LoadWallets()
@@ -126,10 +119,7 @@ else
             if (response.IsSuccessStatusCode)
             {
                 await LoadWallets();
-<<<<<<< HEAD
                 GetAllowedCurrencies();
-=======
->>>>>>> main
             }
         }
         catch (AccessTokenNotAvailableException exception)
@@ -144,10 +134,7 @@ else
         {
             await HttpClient.DeleteAsync("api/wallet/" + id);
             await LoadWallets();
-<<<<<<< HEAD
             GetAllowedCurrencies();
-=======
->>>>>>> main
         }
         catch (AccessTokenNotAvailableException exception)
         {
