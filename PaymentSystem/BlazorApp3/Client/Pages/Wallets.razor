@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
+@inject NavigationManager navManager
 @inject HttpClient HttpClient
 
 
@@ -16,32 +17,65 @@ else
 {
     @foreach (var wallet in WalletList)
     {
-<div class="wallet" style="width: 309px;">
-    <h6 class="card-subtitle mb-2 text-muted">
-        Wallet <span class="small_text">@string.Concat(Enumerable.Repeat("**",16))</span><span class="small_text">@Convert.ToString(wallet.Id).Substring(Convert.ToString(wallet.Id).Length - 4)</span>
-    </h6>
-    <h5 class="card-text">
-        @wallet.Amount
-        @wallet.Currency
-    </h5>
-    <button class="btn btn-primary">Make transfer</button>
-    <button class="btn btn-danger">Delete wallet</button>
-    <br />
-</div>
+        <div class="wallet" style="width: 309px;">
+            <h6 class="card-subtitle mb-2 text-muted">
+                Wallet <span class="small_text">@string.Concat(Enumerable.Repeat("**", 16))</span><span class="small_text">@Convert.ToString(wallet.Id).Substring(Convert.ToString(wallet.Id).Length - 4)</span>
+            </h6>
+            <h5 class="card-text">
+                @wallet.Amount
+                @wallet.Currency
+            </h5>
+            <button @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
+            <button @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
+            <br />
+        </div>
+        @if (AllowedCurrencies.Any())
+        {
+            <div>
+                <h3>Create a new wallet</h3>
+                <select @bind="Currency">
+                    @foreach (var currency in AllowedCurrencies)
+                    {
+                        <option value="@currency">@currency</option>
+                    }
+                </select>
+                <button @onclick="() => CreateWallet()">Create wallet</button>
+            </div>
+        }
+        else
+        {
+            <div>You already have one wallet in each currency.</div>
+        }
     }
 }
 
-<div>
-    <h3>Create a new wallet</h3>
-    <input type="text" placeholder="Currency" @bind="Currency" />
-    <button class="btn-primary" @onclick="() => CreateWallet()">Create wallet</button>
-</div>
-
 @code {
+    private CurrencyList CurrencyList;
+    private List<string> AllowedCurrencies;
+
     private List<Wallet> WalletList;
     private string Currency;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadCurrencies();
+        await LoadWallets();
+        GetAllowedCurrencies();
+    }
+
+    private async Task LoadCurrencies()
+    {
+        try
+        {
+            CurrencyList = await HttpClient.GetFromJsonAsync<CurrencyList>("api/currency");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task LoadWallets()
     {
         try
         {
@@ -51,6 +85,21 @@ else
         {
             exception.Redirect();
         }
+    }
+
+    private void GetAllowedCurrencies()
+    {
+        AllowedCurrencies = new List<string>();
+
+        foreach (var currency in CurrencyList.Currencies)
+        {
+            if (!WalletList.Any(x => x.Currency == currency))
+            {
+                AllowedCurrencies.Add(currency);
+            }
+        }
+
+        Currency = AllowedCurrencies.FirstOrDefault();
     }
 
     private async Task CreateWallet()
@@ -64,19 +113,39 @@ else
 
             if (response.IsSuccessStatusCode)
             {
-                var newWallet = new Wallet
-                {
-                    Id = Guid.NewGuid(),
-                    Amount = 0,
-                    Currency = Currency
-                };
-                WalletList.Add(newWallet);
+                await LoadWallets();
+                GetAllowedCurrencies();
             }
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
+    }
 
+    private async Task DeleteWallet(Guid id)
+    {
+        try
+        {
+            await HttpClient.DeleteAsync("api/wallet/" + id);
+            await LoadWallets();
+            GetAllowedCurrencies();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task MakeTransfer(Guid id)
+    {
+        try
+        {
+            navManager.NavigateTo($"transfer/{id}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 }
