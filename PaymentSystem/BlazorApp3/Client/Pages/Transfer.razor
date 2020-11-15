@@ -26,7 +26,6 @@ else
                 Username:<br />
                 <input @bind="transferData.Username" />
             </p>
-            <p></p>
             <button class="btn btn-primary" @onclick="MakeTransfer">Transfer</button>
         </div>
     </div>
@@ -40,6 +39,7 @@ else
     public Wallet wallet { get; set; }
 
     public TransferDto transferData { get; set; } = new TransferDto();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,7 +55,7 @@ else
 
     private async Task MakeTransfer()
     {
-        try 
+        try
         {
             transferData.SourceWalletId = SourceWalletId;
             transferData.Currency = wallet.Currency;
