@@ -10,7 +10,7 @@
 
 <h3>Wallets</h3>
 
-@if (WalletList == null || WalletList.Count == 0)
+@if (WalletList == null)
 {
     <div>Loading...</div>
 }
@@ -30,6 +30,7 @@ else
             <button @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
             <br />
         </div>
+    }
         @if (AllowedCurrencies.Any())
         {
             <div>
@@ -49,7 +50,6 @@ else
         {
             <div>You already have one wallet in each currency.</div>
         }
-    }
 }
 
 @code {
