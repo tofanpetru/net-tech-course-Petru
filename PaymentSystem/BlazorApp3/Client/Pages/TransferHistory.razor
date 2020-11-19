@@ -1,0 +1,105 @@
+﻿@page "/transfer/history"
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Authorization;
+@using BlazorApp3.Shared;
+@inject HttpClient HttpClient
+@attribute [Authorize]
+<style>
+    .pagination1 a {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+    }
+
+        .pagination1 a.active {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        .pagination1 a:hover:not(.active) {
+            background-color: #ddd;
+        }
+</style>
+
+<h3>TransferHistory</h3>
+
+@if (transactionsData?.Transactions == null)
+{
+<p>Loading...</p> }
+            else
+            {
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td><strong>Id transaction</strong></td>
+            <td><strong>Date</strong></td>
+            <td><strong>Amount</strong></td>
+            <td><strong>DestinationWalletId</strong></td>
+            <td><strong>SourceWalletId</strong></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in transactionsData.Transactions)
+        {
+<tr>
+    <td>@transaction.Id</td>
+    <td>@transaction.Date</td>
+    <td>@transaction.Amount</td>
+    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.DestinationWalletId).Substring(Convert.ToString(transaction.DestinationWalletId).Length - 4)</td>
+    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.SourceWalletId).Substring(Convert.ToString(transaction.SourceWalletId).Length - 4)</td>
+</tr>}
+    </tbody>
+</table>
+
+                <div class="pagination1">
+                    <a @onclick="() => LoadTransactions(Math.Clamp(pageNumber - 1, 1, CalculatePageCount()))">&laquo;</a>
+                    @for (int i = Math.Clamp(pageNumber - 2, 1, CalculatePageCount()); i <= Math.Clamp(pageNumber + 2, 1, CalculatePageCount()); i++)
+                    {
+                        var pn = i;
+    <a class="@(pn == pageNumber ? "active" : "")" @onclick="() => LoadTransactions(pn)">@pn</a>}
+                    <a @onclick="() => LoadTransactions(Math.Clamp(pageNumber + 1, 1, CalculatePageCount()))">&raquo;</a>
+                </div>}
+
+@code {
+
+    private TransactionsHistoryData transactionsData;
+
+    private int pageNumber = 3;//3 tranzactii pe pagina
+    private int itemsPerPage = 10;// max 10 pagini a cate 3 tran
+
+    private Direction direction;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTransactions(pageNumber);
+    }
+
+    private async Task LoadTransactions(int pNam)
+    {
+        try
+        {
+            transactionsData = await HttpClient.GetFromJsonAsync<TransactionsHistoryData>($"api/wallet/transfers/{itemsPerPage}/{pNam}?direction={direction}");
+            pageNumber = pNam;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private int CalculatePageCount()
+    {
+        var div = transactionsData.ItemCount / itemsPerPage;
+        var mod = transactionsData.ItemCount % itemsPerPage;
+        return div + (mod > 0 ? 1 : 0);
+    }
+
+    private async Task ChangeDirection(Direction dir)
+    {
+        direction = dir == direction ? Direction.None : dir;
+        await LoadTransactions(pageNumber);
+    }
+}

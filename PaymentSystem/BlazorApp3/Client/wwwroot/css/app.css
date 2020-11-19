@@ -1,5 +1,4 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-/* Wallets design*/
 .wallet {
     width: 309px;
     border: 1px solid #555;
@@ -7,7 +6,6 @@
     margin: 13px;
     padding: 10px;
 }
-
 .small_text {
     font-size: small;
     color: azure;

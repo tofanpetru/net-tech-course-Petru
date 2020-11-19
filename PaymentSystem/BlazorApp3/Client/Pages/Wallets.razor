@@ -26,39 +26,37 @@ else
                 @wallet.Amount
                 @wallet.Currency
             </h5>
-            <button @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
-            <button @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
+            <button class="btn btn-success" @onclick="() => MakeTransfer(wallet.Id)">Make transfer</button>
+            <button class="btn btn-danger" @onclick="() => DeleteWallet(wallet.Id)">Delete wallet</button>
             <br />
         </div>
     }
-        @if (AllowedCurrencies.Any())
-        {
-            <div>
-                <h3>Create a new wallet</h3>
+    @if (AllowedCurrencies.Any())
+    {
+        <div>
+            <h3>Create a new wallet</h3>
 
-                <select @bind="Currency">
-                    @foreach (var currency in AllowedCurrencies)
-                    {
-                        <option value="@currency">@currency</option>
-                    }
-                </select>
+            <select @bind="Currency">
+                @foreach (var currency in AllowedCurrencies)
+                {
+                    <option value="@currency">@currency</option>
+                }
+            </select>
 
-                <button @onclick="() => CreateWallet()">Create wallet</button>
-            </div>
-        }
-        else
-        {
-            <div>You already have one wallet in each currency.</div>
-        }
+            <button class="btn btn-success" @onclick="() => CreateWallet()">Create wallet</button>
+        </div>
+    }
+    else
+    {
+        <span>You already have</span>
+    }
 }
 
 @code {
     private CurrencyList CurrencyList;
-
     private List<string> AllowedCurrencies;
 
     private List<Wallet> WalletList;
-
     private string Currency;
 
     protected override async Task OnInitializedAsync()
