@@ -5,7 +5,25 @@
 @using BlazorApp3.Shared;
 @inject HttpClient HttpClient
 @attribute [Authorize]
-
+    <style>
+        /* Pagination links */
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
+            /* Style the active/current link */
+            .pagination a.active {
+                background-color: dodgerblue;
+                color: white;
+            }
+            /* Add a grey background color on mouse-over */
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+    </style>
 
 <h3>TransferHistory</h3>
 
@@ -32,8 +50,8 @@ else
                     <td>@transaction.Id</td>
                     <td>@transaction.Date</td>
                     <td>@transaction.Amount</td>
-                    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.DestinationWalletId).Substring(Convert.ToString(transaction.DestinationWalletId).Length - 4)</td>
-                    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.SourceWalletId).Substring(Convert.ToString(transaction.SourceWalletId).Length - 4)</td>
+                    <td class="small">@Convert.ToString(transaction.DestinationWalletId).Substring(0, 6)@string.Concat(Enumerable.Repeat("**", 15))</td>
+                    <td class="small">@Convert.ToString(transaction.SourceWalletId).Substring(0, 6)@string.Concat(Enumerable.Repeat("**", 15))</td>
                 </tr>
             }
         </tbody>
@@ -51,8 +69,11 @@ else
 }
 
 <div>
-    <button class="btn @(direction == Direction.Next ? "btn-secondary" : " btn-outline-seciundary")" @onclick="() => ChangeDirection(Direction.Next)">
-        Next
+    <button class="btn @(direction == Direction.Inbound ? "btn-secondary" : " btn-outline-seciundary")" @onclick="() => ChangeDirection(Direction.Inbound)">
+        Inbound
+    </button>
+    <button class="btn @(direction == Direction.Outbound ? "btn-secondary" : " btn-outline-seciundary")" @onclick="() => ChangeDirection(Direction.Outbound)">
+        Outbound
     </button>
 </div>
 
@@ -61,8 +82,8 @@ else
 
     private TransactionsHistoryData transactionsData;
 
-    private int pageNumber = 3;//3 tranzactii pe pagina
-    private int itemsPerPage = 10;// max 10 pagini a cate 3 tran
+    private int pageNumber = 1;
+    private int itemsPerPage = 5; //max 5 tranzactii pe pagina
 
     private Direction direction;
 
@@ -86,9 +107,7 @@ else
 
     private int CalculatePageCount()
     {
-        var div = transactionsData.ItemCount / itemsPerPage;
-        var mod = transactionsData.ItemCount % itemsPerPage;
-        return div + (mod > 0 ? 1 : 0);
+        return (int)Math.Ceiling((double)transactionsData.ItemCount / itemsPerPage);
     }
 
     private async Task ChangeDirection(Direction dir)

@@ -149,8 +149,7 @@ namespace BlazorApp3.Server.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("transfers/{itemsPerPage}/{pageNumber}")]
+        [HttpGet("transfers/{itemsPerPage}/{pageNumber}")]
         public TransactionsHistoryData GetTransactions(int itemsPerPage, int pageNumber, [FromQuery] Direction direction)
         {
             var userId = userManager.GetUserId(User);
@@ -164,21 +163,17 @@ namespace BlazorApp3.Server.Controllers
             {
                 case Direction.Inbound:
                     queryForCount = context.Transactions.Where(t => walletIds.Contains(t.SourceWalletId));
-                    transactions = queryForCount.OrderByDescending(x => x.Date)
-                        .Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage).ToArray();
+                    transactions = queryForCount.OrderByDescending(x => x.Date).Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage).ToArray();
                     break;
 
                 case Direction.Outbound:
                     queryForCount = context.Transactions.Where(t => walletIds.Contains(t.DestinationWalletId));
-                    transactions = queryForCount.OrderByDescending(x => x.Date)
-                        .Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage).ToArray();
+                    transactions = queryForCount.OrderByDescending(x => x.Date).Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage).ToArray();
                     break;
-                case Direction.None:
+                case Direction.DefaultDirection:
                 default:
-                    queryForCount = context.Transactions.Where(t =>
-                        walletIds.Contains(t.DestinationWalletId) || walletIds.Contains(t.SourceWalletId));
-                    transactions = queryForCount.OrderByDescending(x => x.Date)
-                        .Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage).ToArray();
+                    queryForCount = context.Transactions.Where(t => walletIds.Contains(t.DestinationWalletId) || walletIds.Contains(t.SourceWalletId));
+                    transactions = queryForCount.OrderByDescending(x => x.Date).Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage).ToArray();
                     break;
             }
 
