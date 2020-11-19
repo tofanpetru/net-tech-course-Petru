@@ -38,8 +38,7 @@ namespace BlazorApp3.Server.Controllers
             return wallets;
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public Wallet GetWallet(Guid id)
         {
             var userId = userManager.GetUserId(User);
@@ -82,8 +81,7 @@ namespace BlazorApp3.Server.Controllers
             return Ok();
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteWallet([FromRoute] Guid id)
         {
             var userId = userManager.GetUserId(User);
@@ -101,8 +99,7 @@ namespace BlazorApp3.Server.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("transfer")]
+        [HttpPost("transfer")]
         public ActionResult MakeTransfer([FromBody] TransferDto data)
         {
             var userId = userManager.GetUserId(User);

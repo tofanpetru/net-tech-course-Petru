@@ -14,32 +14,31 @@
 }
 else
 {
-<form class="form-inline">
-    <div class="wallet" style="width: 378px;">
-        <div>
-            <span>Select currency:</span>
-            <select @bind="transferData.Currency" class="custom-select my-1 mr-sm-2">
-                <option selected>Choose wallet currency</option>
-                @foreach (var wallet in WalletList)
-                {
-                    <option value="@wallet.Currency">@wallet.Currency</option>
-                }
-            </select>
-            <div class="form-group mx-sm-3 mb-2">
-                <span>Input recipient name:</span>
-                <input type="text" @bind="transferData.Username" @onfocusout="ValidateUser" class="form-control @RecipientInputClass" style="position:static;" placeholder="Beneficiary" />
+    <form class="form-inline">
+        <div class="wallet" style="width: 378px;">
+            <div>
+                <span>Select currency:</span>
+                <select @bind="transferData.Currency" class="custom-select my-1 mr-sm-2">
+                    @foreach (var wallet in WalletList)
+                    {
+                        <option value="@wallet.Currency">@wallet.Currency</option>
+                    }
+                </select>
+                <div class="form-group mx-sm-3 mb-2">
+                    <span>Input recipient name:</span>
+                    <input type="text" @bind="transferData.Username" @onfocusout="ValidateUser" class="form-control @RecipientInputClass" style="position:static;" placeholder="Beneficiary" />
+                </div>
+                <br />
+                <div class="form-group mx-sm-3 mb-2">
+                    <span>Enter the amount:</span>
+                    <input type="number" @bind="transferData.Amount" style="position:static;" placeholder="Amount" class="form-control" />
+                </div>
+                <button class="btn btn-primary mb-2" @onclick="MakeTransfer">Transfer</button>
             </div>
-            <br />
-            <div class="form-group mx-sm-3 mb-2">
-                <span>Enter the amount:</span>
-                <input type="number" @bind="transferData.Amount" style="position:static;" placeholder="Amount" class="form-control"/>
-            </div>
-            <button class="btn btn-primary mb-2" @onclick="MakeTransfer">Transfer</button>
-        </div>
 
-        <br />
-    </div>
-</form>
+            <br />
+        </div>
+    </form>
 }
 
 

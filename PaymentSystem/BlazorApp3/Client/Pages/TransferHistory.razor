@@ -5,65 +5,59 @@
 @using BlazorApp3.Shared;
 @inject HttpClient HttpClient
 @attribute [Authorize]
-<style>
-    .pagination1 a {
-        color: black;
-        float: left;
-        padding: 8px 16px;
-        text-decoration: none;
-        transition: background-color .3s;
-    }
 
-        .pagination1 a.active {
-            background-color: dodgerblue;
-            color: white;
-        }
-
-        .pagination1 a:hover:not(.active) {
-            background-color: #ddd;
-        }
-</style>
 
 <h3>TransferHistory</h3>
 
 @if (transactionsData?.Transactions == null)
 {
-<p>Loading...</p> }
-            else
+    <p>Loading...</p> 
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td><strong>Id transaction</strong></td>
+                <td><strong>Date</strong></td>
+                <td><strong>Amount</strong></td>
+                <td><strong>DestinationWalletId</strong></td>
+                <td><strong>SourceWalletId</strong></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in transactionsData.Transactions)
             {
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <td><strong>Id transaction</strong></td>
-            <td><strong>Date</strong></td>
-            <td><strong>Amount</strong></td>
-            <td><strong>DestinationWalletId</strong></td>
-            <td><strong>SourceWalletId</strong></td>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var transaction in transactionsData.Transactions)
+                <tr>
+                    <td>@transaction.Id</td>
+                    <td>@transaction.Date</td>
+                    <td>@transaction.Amount</td>
+                    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.DestinationWalletId).Substring(Convert.ToString(transaction.DestinationWalletId).Length - 4)</td>
+                    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.SourceWalletId).Substring(Convert.ToString(transaction.SourceWalletId).Length - 4)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a @onclick="() => LoadTransactions(Math.Clamp(pageNumber - 1, 1, CalculatePageCount()))">&laquo;</a>
+        @for (int i = Math.Clamp(pageNumber - 2, 1, CalculatePageCount()); i <= Math.Clamp(pageNumber + 2, 1, CalculatePageCount()); i++)
         {
-<tr>
-    <td>@transaction.Id</td>
-    <td>@transaction.Date</td>
-    <td>@transaction.Amount</td>
-    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.DestinationWalletId).Substring(Convert.ToString(transaction.DestinationWalletId).Length - 4)</td>
-    <td class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(transaction.SourceWalletId).Substring(Convert.ToString(transaction.SourceWalletId).Length - 4)</td>
-</tr>}
-    </tbody>
-</table>
+            var pn = i;
+            <a class="@(pn == pageNumber ? "active" : "")" @onclick="() => LoadTransactions(pn)">@pn</a>
+        }
+        <a @onclick="() => LoadTransactions(Math.Clamp(pageNumber + 1, 1, CalculatePageCount()))">&raquo;</a>
+    </div>
+}
 
-                <div class="pagination1">
-                    <a @onclick="() => LoadTransactions(Math.Clamp(pageNumber - 1, 1, CalculatePageCount()))">&laquo;</a>
-                    @for (int i = Math.Clamp(pageNumber - 2, 1, CalculatePageCount()); i <= Math.Clamp(pageNumber + 2, 1, CalculatePageCount()); i++)
-                    {
-                        var pn = i;
-    <a class="@(pn == pageNumber ? "active" : "")" @onclick="() => LoadTransactions(pn)">@pn</a>}
-                    <a @onclick="() => LoadTransactions(Math.Clamp(pageNumber + 1, 1, CalculatePageCount()))">&raquo;</a>
-                </div>}
+<div>
+    <button class="btn @(direction == Direction.Next ? "btn-secondary" : " btn-outline-seciundary")" @onclick="() => ChangeDirection(Direction.Next)">
+        Next
+    </button>
+</div>
 
-@code {
+@code 
+{
 
     private TransactionsHistoryData transactionsData;
 
@@ -99,7 +93,7 @@
 
     private async Task ChangeDirection(Direction dir)
     {
-        direction = dir == direction ? Direction.None : dir;
+        direction = dir == direction ? Direction.DefaultDirection : dir;
         await LoadTransactions(pageNumber);
     }
 }
