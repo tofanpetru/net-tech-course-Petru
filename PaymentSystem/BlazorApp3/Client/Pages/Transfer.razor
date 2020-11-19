@@ -27,8 +27,8 @@ else
                 <div class="form-group mx-sm-3 mb-2">
                     <span>Input recipient name:</span>
                     <input type="text" @bind="transferData.Username" @onfocusout="ValidateUser" class="form-control" style="position:static;" placeholder="Beneficiary" />
-                    <div class="input-group-append" style="@RecipientInputClass">
-                        <span class="input-group-text_nameRecipient">
+                    <div class="input-group-append">
+                        <span class="input-group-text_nameRecipient" style="@RecipientInputClass">
                             <span class="iconify" data-icon="bi:credit-card-2-back-fill"></span>
                         </span>
                     </div>

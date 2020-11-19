@@ -20,7 +20,7 @@ else
     {
         <div class="wallet" style="width: 309px;">
             <h6 class="card-subtitle mb-2">
-                Wallet <span class="small">@string.Concat(Enumerable.Repeat("**", 16))</span><span class="small">@Convert.ToString(wallet.Id).Substring(Convert.ToString(wallet.Id).Length - 4)</span>
+                Wallet <span class="small">@string.Concat(Enumerable.Repeat("**", 16))@Convert.ToString(wallet.Id).Substring(Convert.ToString(wallet.Id).Length - 4)</span>
             </h6>
             <h5 class="card-text">
                 @wallet.Amount
