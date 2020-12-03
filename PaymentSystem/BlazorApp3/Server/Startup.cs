@@ -47,6 +47,8 @@ namespace BlazorApp3.Server
             services.Configure<IdentityOptions>(options =>
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
 
+            //services.AddMediatR(typeof(Startup));
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
