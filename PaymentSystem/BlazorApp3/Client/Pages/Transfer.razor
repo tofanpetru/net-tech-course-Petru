@@ -6,7 +6,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager navManager
 
-<h3>Transfer</h3>
+<h3>Transfer page</h3>
 
 @if (WalletList == null || WalletList.Count == 0)
 {
@@ -14,28 +14,37 @@
 }
 else
 {
-    <div>
-        <div>
-            <span>Select currency:</span>
-            <select @bind="transferData.Currency">
-                @foreach (var wallet in WalletList)
-                {
-                    <option value="@wallet.Currency">@wallet.Currency</option>
-                }
-            </select>
+    <form class="form-inline">
+        <div class="wallet" style="width: 378px;">
+            <div>
+                <span>Select currency:</span>
+                <select @bind="transferData.Currency" class="custom-select my-1 mr-sm-2">
+                    @foreach (var wallet in WalletList)
+                    {
+                        <option value="@wallet.Currency">@wallet.Currency</option>
+                    }
+                </select>
+                <div class="form-group mx-sm-3 mb-2">
+                    <span>Input recipient name:</span>
+                    <input type="text" @bind="transferData.Username" @onfocusout="ValidateUser" class="form-control" style="position:static;" placeholder="Beneficiary" />
+                    <div class="input-group-append">
+                        <span class="input-group-text_nameRecipient" style="@RecipientInputClass">
+                            <span class="iconify" data-icon="bi:credit-card-2-back-fill"></span>
+                        </span>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group mx-sm-3 mb-2">
+                    <span>Enter the amount:</span>
+                    <input type="number" @bind="transferData.Amount" style="position:static;" placeholder="Amount" class="form-control" />
+                </div>
+                <br />
+                <button class="btn btn-primary mb-2" @onclick="MakeTransfer">Transfer</button>
+            </div>
+
+            <br />
         </div>
-        <div>
-            <span>Input recipient name:</span>
-            <input type="text" @bind="transferData.Username" @onfocusout="ValidateUser" class="@RecipientInputClass" />
-        </div>
-        <div>
-            <span>Amount:</span>
-            <input type="number" @bind="transferData.Amount" />
-        </div>
-        <div>
-            <button class="btn btn-primary" @onclick="MakeTransfer">Transfer</button>
-        </div>
-    </div>
+    </form>
 }
 
 
@@ -70,11 +79,11 @@ else
 
             if (result.Exists)
             {
-                RecipientInputClass = "border border-success";
+                RecipientInputClass = "color: green;";
             }
             else
             {
-                RecipientInputClass = "border border-danger";
+                RecipientInputClass = "color: red;";
             }
         }
         catch (AccessTokenNotAvailableException exception)

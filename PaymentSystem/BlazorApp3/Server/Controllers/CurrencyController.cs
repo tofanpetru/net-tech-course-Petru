@@ -22,3 +22,4 @@ namespace BlazorApp3.Server.Controllers
         }
     }
 }
+
